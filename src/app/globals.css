@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+/* Design tokens: navy and blue-gray, light theme. */
+@theme {
+  --color-ink: #dde6ed;       /* page background (also used under the sticky navbar) */
+  --color-surface: #eef3f7;   /* cards, inputs, sidebar */
+  --color-raised: #c9d6df;    /* chips, hover fills */
+  --color-line: #9db2bf;      /* borders */
+  --color-text: #27374d;
+  --color-muted: #3d546a;
+  --color-accent: #27374d;    /* primary buttons */
+  --color-accent-soft: #526d82;
+  --color-danger: #b42318;
+  --color-ok: #166534;
+
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-public), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 0.875rem;
+  --radius-control: 0.5rem;
+}
+
+:root { color-scheme: light; }
+
+/* Slowly drifting gradient background */
+body {
+  min-height: 100vh;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  background: linear-gradient(135deg, #f1f6f9, #dde6ed, #bccdd9, #dde6ed, #f1f6f9);
+  background-size: 300% 300%;
+  animation: drift 20s ease-in-out infinite;
+}
+
+@keyframes drift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.rise { animation: rise 0.8s ease-out both; }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.02em; line-height: 1.15; }
+
+:focus-visible { outline: 2px solid var(--color-accent-soft); outline-offset: 2px; }
+
+
+/* ---------- Motion and decoration ---------- */
+.rise-2 { animation-delay: 0.12s; }
+.rise-3 { animation-delay: 0.24s; }
+.rise-4 { animation-delay: 0.36s; }
+
+/* Scroll reveal: fades and lifts in, fades back out when scrolled away */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px) scale(0.98);
+  filter: blur(4px);
+  transition: opacity 0.7s ease, transform 0.7s ease, filter 0.7s ease;
+}
+.reveal-in { opacity: 1; transform: none; filter: none; }
+.reveal:nth-child(3n + 2) { transition-delay: 0.1s; } /* staggers cards in a row */
+.reveal:nth-child(3n) { transition-delay: 0.2s; }
+
+/* Floating background blobs */
+.orb { position: absolute; border-radius: 9999px; filter: blur(70px); animation: float 22s ease-in-out infinite; }
+.orb-a { width: 420px; height: 420px; background: #9db2bf; opacity: 0.55; top: -120px; left: -100px; }
+.orb-b { width: 360px; height: 360px; background: #526d82; opacity: 0.22; top: 35%; right: -120px; animation-duration: 28s; animation-delay: -8s; }
+.orb-c { width: 300px; height: 300px; background: #c9d6df; opacity: 0.7; bottom: -80px; left: 30%; animation-duration: 32s; animation-delay: -14s; }
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, -30px) scale(1.08); }
+  66% { transform: translate(-30px, 40px) scale(0.95); }
+}
+
+/* Spinning dashed ring around the profile photo */
+.avatar-wrap { position: relative; }
+.avatar-wrap::before {
+  content: ""; position: absolute; inset: -12px; border-radius: 9999px;
+  border: 2px dashed var(--color-accent-soft); animation: spin-slow 24s linear infinite;
+}
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+
+/* Nav links: underline grows on hover */
+.link-u {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat; background-position: 0 100%; background-size: 0 2px;
+  padding-bottom: 2px; transition: background-size 0.3s ease, color 0.2s;
+}
+.link-u:hover { background-size: 100% 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  body, .rise, .orb, .avatar-wrap::before { animation: none; }
+  .reveal { opacity: 1; transform: none; filter: none; transition: none; }
+  * { transition-duration: 0.01ms !important; }
+}
